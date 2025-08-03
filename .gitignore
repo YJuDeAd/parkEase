@@ -1,0 +1,10 @@
+# Ignore all secrets.yaml files
+**/secrets.yaml
+
+# Ignore all training data files
+carDetectionModel/negative
+carDetectionModel/positive
+carDetectionModel/train
+
+# Ignore model file
+carDetectionModel/car_detector.pt

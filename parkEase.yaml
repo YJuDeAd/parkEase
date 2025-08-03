@@ -1,0 +1,207 @@
+esphome:
+  name: smart-parking
+  friendly_name: Smart Parking
+
+esp8266:
+  board: esp01_1m
+
+# Enable logging
+logger:
+  logs:
+    component: ERROR
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: !secret parkEase_key
+
+ota:
+  password: !secret parkEase_ota
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Smart-Parking Fallback Hotspot"
+    password: !secret parkEase_hotspot
+
+captive_portal:
+    
+
+# For web UI
+web_server:
+  port: 80
+  version: 2
+  auth:
+    username: "admin"
+    password: "admin"
+
+
+# All variables
+globals:
+  - id: parking_slots
+    type: int
+    restore_value: yes
+    initial_value: "4"
+  - id: Entry_trigger
+    type: int
+    restore_value: yes
+    initial_value: "0"
+  - id: Exit_trigger
+    type: int
+    restore_value: yes
+    initial_value: "0"
+  - id: error
+    type: int
+    restore_value: yes
+    initial_value: "0"
+  - id: total_cars_entered
+    type: int
+    restore_value: yes
+    initial_value: "0"
+  - id: total_cars_left
+    type: int
+    restore_value: yes
+    initial_value: "0"
+
+
+# Data configuration
+text_sensor:
+  - platform: template
+    name: "1) Parking Slots"
+    lambda: "return to_string(id(parking_slots));"
+    update_interval: 30s
+
+  - platform: template
+    name: "2) Total Cars Entered Since Online"
+    lambda: "return to_string(id(total_cars_entered));"
+    update_interval: 30s
+
+  - platform: template
+    name: "3) Total Cars Left Since Online"
+    lambda: "return to_string(id(total_cars_left));"
+    update_interval: 30s
+
+# SERVO CONFIGURATION
+
+# Setting up switch for manual trigger
+switch:
+  - platform: template
+    name: "4) Servo Switch"
+    id: servo_switch
+    icon: mdi:sync
+    optimistic: true
+    turn_on_action:
+      - lambda: |-
+          id(servo1).write(0);  // Servo moves to the opposite extreme (off state)
+      - logger.log: "Servo turned on"
+    turn_off_action:
+      - lambda: |-
+          id(servo1).write(-1.0);  // Servo moves to one extreme (on state)
+      - logger.log: "Servo turned off"
+
+# Servo declatraion
+servo:
+  - id: servo1
+    output: output1
+
+# Servo output
+output:
+  - platform: esp8266_pwm
+    id: output1
+    pin: GPIO12 #D6
+    frequency: 50 Hz  # MUST BE 50Hz
+
+
+# LCD CONFIGURATION
+
+# Defining data pins
+i2c:
+  sda: GPIO4 #D2
+  scl: GPIO5 #D1
+
+# Setting up display
+display:
+  - platform: lcd_pcf8574
+    dimensions: 16x2
+    address: 0x27
+    id: lcd_display
+    lambda: |-
+      if (id(error) == 0) {
+        it.print(4, 0, "ParkEase");
+        it.printf(2, 1, "SlotsLeft: %d", id(parking_slots));
+      }
+      if (id(error) == 1) {
+        it.print(4, 0, "No Slots");
+        it.print(6, 1, "Left");
+      }
+
+
+# PROXIMITY SENSOR CONFIGURATION
+binary_sensor:
+  #Entry gate configuration
+  - platform: gpio
+    pin: GPIO14
+    name: "5) Entry Gate Sensor"
+    id: proximity_sensor
+    device_class: occupancy
+    filters:
+      - invert:
+      - delayed_off: 500ms
+    on_press:
+      - delay: 1s  # Delay before decreasing slots
+      - lambda: |-
+          if (id(parking_slots) == 0) {
+            id(error) = 1;
+          }
+          if (id(Exit_trigger) == 0 && id(Entry_trigger) == 0 && id(parking_slots) > 0) {
+            id(parking_slots) -= 1;
+            id(Entry_trigger) = 1;
+            id(servo1).write(0);
+            id(total_cars_entered) += 1;
+            id(servo_switch).turn_on();
+          }
+      - component.update: lcd_display  # Update display after changing the value
+    on_release:
+      - delay: 1s  # Delay before increasing slots
+      - lambda: |-
+          if (id(parking_slots) == 0) {
+            id(error) = 0;
+          }
+          if (id(Entry_trigger) == 0 && id(Exit_trigger) == 1) {
+            id(Exit_trigger) = 0;
+            id(servo1).write(-1.0);
+            id(servo_switch).turn_off();
+          }
+      - component.update: lcd_display  # Update display after changing the value
+
+  #Exit gate configuration
+  - platform: gpio
+    pin: GPIO13  # D7
+    name: "6) Exit Gate Sensor"
+    id: exit_sensor
+    device_class: occupancy
+    filters:
+      - invert:
+      - delayed_off: 500ms
+    on_press:
+      - delay: 1s  # Delay before decreasing slots
+      - lambda: |-
+          if (id(Exit_trigger) == 0 && id(Entry_trigger) == 0 && id(parking_slots) < 4) {
+            id(parking_slots) += 1;
+            id(Exit_trigger) = 1;
+            id(servo1).write(0);
+            id(total_cars_left) += 1;
+            id(servo_switch).turn_on();
+          }
+      - component.update: lcd_display  # Update display after changing the value
+    on_release:
+      - delay: 1s  # Delay before increasing slots
+      - lambda: |-
+          if (id(Entry_trigger) == 1 && id(Exit_trigger) == 0) {
+            id(Entry_trigger) = 0;
+            id(servo1).write(-1.0);
+            id(servo_switch).turn_off();
+          }
