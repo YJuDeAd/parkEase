@@ -83,4 +83,4 @@ car_detection_model/
 
 ## 🧑‍💻 Author
 
-Developed by [YJuDeAd](https://github.com/YJuDeAd)
+Developed by [YJuDeAd](https://github.com/YJuDeAd), [inderjot249](https://github.com/inderjot249) and [KrishnaKangotra](https://github.com/KrishnaKangotra)
