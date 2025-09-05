@@ -63,7 +63,7 @@ This project aims to automate parking using ESPHome, Home Assistant, and AI — 
 
 If you encounter a bug:
 
-1. Check if it already exists in [Issues](https://github.com/YJuDeAd/ParkEase-ESPHome/issues).
+1. Check if it already exists in [Issues](https://github.com/YJuDeAd/parkEase/issues).
 2. If not, open a new issue with:
 
    * A clear title
