@@ -43,8 +43,6 @@
 
 ## 📁 Repository Structure
 
-## 📁 Repository Structure
-
 | File/Folder            | Description                                               |
 | ---------------------- | --------------------------------------------------------- |
 | `parkEase.yaml`        | Main ESPHome config for gate + sensor-based parking logic |
