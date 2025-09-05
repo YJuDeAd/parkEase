@@ -41,10 +41,14 @@ This project aims to automate parking using ESPHome, Home Assistant, and AI — 
 | ---------------------- | -------------------------------------------- |
 | `parkEase.yaml`        | ESPHome config for sensors + gate            |
 | `cam.yaml`             | ESPHome config for camera                    |
-| `car_detection_model/` | ML model and scripts for car detection (WIP) |
+| `dashboard.yaml`       | Home Assistant dashboard layout              |
+| `carDetectionModel/`   | ML model and scripts for car detection (WIP) |
+| `Images/`              | Example images (dashboards, test inputs/outputs) |
 | `requirements.txt`     | Python libraries required for the ML scripts |
 | `README.md`            | Main project overview                        |
-| `CONTRIBUTING.md`      | You are reading it!                          |
+| `CONTRIBUTION.md`      | Contribution guidelines (you are here)       |
+| `secrets.yaml`         | Wi-Fi and API credentials (not committed)    |
+
 
 ---
 

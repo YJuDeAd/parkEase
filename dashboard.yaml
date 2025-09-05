@@ -1,0 +1,101 @@
+views:
+  - title: Home
+    sections:
+      - type: grid
+        cards:
+          - type: custom:digital-clock
+            padding: 8px 0
+            firstLineLayout:
+              textAlign: center
+              lineHeight: 1em
+              fontSize: 2.8em
+              fontWeight: bold
+            secondLineLayout:
+              textAlign: center
+              lineHeight: 1em
+              fontSize: 1.6em
+              fontWeight: bold
+          - show_current: true
+            show_forecast: true
+            type: weather-forecast
+            entity: weather.forecast_home
+            forecast_type: hourly
+            theme: Graphite Nightshade
+            forecast_slots: 5
+      - type: grid
+        cards:
+          - show_name: true
+            show_icon: true
+            type: button
+            entity: switch.smart_parking_4_servo_switch
+            name: Gate Switch
+            grid_options:
+              columns: 6
+              rows: 2
+            show_state: false
+            theme: Graphite Nightshade
+            icon: ''
+          - show_name: true
+            show_icon: true
+            type: button
+            entity: light.cam_flashlight
+            name: Flashlight
+            theme: Graphite Nightshade
+            show_state: false
+          - type: entities
+            entities:
+              - entity: sensor.smart_parking_2_total_cars_entered_since_online
+                name: Total Cars Entered Since Online
+              - entity: sensor.smart_parking_3_total_cars_left_since_online
+                name: Total Cars Left Since Online
+            theme: Graphite Nightshade
+            state_color: false
+        visibility:
+          - condition: state
+            entity: binary_sensor.parking_system_offline
+            state: 'off'
+      - type: grid
+        cards:
+          - type: gauge
+            entity: sensor.smart_parking_1_parking_slots
+            theme: Graphite Nightshade
+            max: 4
+            min: 0
+            name: Parking Slots
+          - show_state: true
+            show_name: true
+            camera_view: auto
+            fit_mode: cover
+            type: picture-entity
+            image: https://demo.home-assistant.io/stub_config/bedroom.png
+            camera_image: camera.cam_my_esp32_cam
+            entity: camera.cam_my_esp32_cam
+            theme: Graphite Nightshade
+            name: Camera
+        visibility:
+          - condition: state
+            entity: binary_sensor.parking_system_offline
+            state: 'off'
+      - type: grid
+        cards:
+          - type: markdown
+            content: |-
+              ## 🚧 Parking System Offline
+              Devices are currently offline.  
+              They will reconnect automatically.
+            grid_options:
+              columns: full
+              rows: 4
+        visibility:
+          - condition: state
+            entity: binary_sensor.parking_system_offline
+            state: 'on'
+    header:
+      layout: center
+      badges_position: bottom
+      badges_wrap: wrap
+      card:
+        type: markdown
+        theme: Graphite Nightshade
+        content: |
+          <center> <h1> Park Ease <h1> <center>

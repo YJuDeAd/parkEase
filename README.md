@@ -43,28 +43,56 @@
 
 ## 📁 Repository Structure
 
+## 📁 Repository Structure
+
 | File/Folder            | Description                                               |
 | ---------------------- | --------------------------------------------------------- |
 | `parkEase.yaml`        | Main ESPHome config for gate + sensor-based parking logic |
 | `cam.yaml`             | ESPHome config for camera surveillance                    |
-| `car_detection_model/` | (In progress) ML model for detecting empty/occupied slots |
+| `dashboard.yaml`       | Home Assistant dashboard layout                           |
+| `carDetectionModel/` | (In progress) ML model for detecting empty/occupied slots |
+| `Images/`              | Example images (dashboards, test inputs/outputs)          |
+| `CONTRIBUTION.md`      | Contribution guidelines for developers                    |
 | `secrets.yaml`         | Wi-Fi and API credentials (optional, not committed)       |
 | `README.md`            | Project overview and documentation                        |
 
-## 🧠 AI Model (Car Detection)
-This project uses a custom-trained YOLO model to detect parked cars and identify empty slots.
 
-Because the model file is greater than 100 MB, it's not included directly in this repository.
+## 🧠 AI Model (Car Detection)  
 
-➡️ Download the model here: 
-[Download car_detector.pt](https://drive.google.com/file/d/1A5-zxTA45bOEvrlhjU-sA8Ej1eDgjnVY/view?usp=sharing)
+This project uses a **YOLOv8x segmentation model** to detect parked cars and identify empty slots.  
 
-Once downloaded, place the file in the following directory:
+Because the model file is greater than 100 MB, it's not included directly in this repository.  
+
 ```
-car_detection_model/
-├── car_detector.pt
-└── yolo_script.py
+carDetectionModel/
+├── yolo8x-seg.pt
+├── display.py
+├── imgRecon.py
+└── main.py
 ```
+
+## 🖼️ Examples / Demo
+
+### 📊 Home Assistant Dashboard
+
+#### ✅ System Online
+![Dashboard Online](Images/dashboard_online.png)
+
+#### ❌ System Offline
+![Dashboard Offline](Images/dashboard_offline.png)
+
+---
+
+### 🧪 Car Detection (YOLOv8 Segmentation)
+
+#### 🔹 Input Test Image
+![Test Image](Images/test.jpeg)
+
+#### 🔹 Detection Result
+![Detection Result](Images/output.png)
+
+#### 🔹 Available Slots
+![Available Slots](Images/available_slots.png)
 
 ## 📚 References
 

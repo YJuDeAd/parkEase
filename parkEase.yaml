@@ -22,6 +22,11 @@ wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
 
+  manual_ip:
+    static_ip: !secret parkEase_ip     # <-- your desired IP
+    gateway: !secret gateway         # <-- usually the router address in 10.20.51.x
+    subnet: 255.255.255.0 
+
   # Enable fallback hotspot (captive portal) in case wifi connection fails
   ap:
     ssid: "Smart-Parking Fallback Hotspot"
