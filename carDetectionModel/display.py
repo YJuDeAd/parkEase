@@ -1,6 +1,6 @@
+from path import filepath
 import numpy as np
 import cv2
-
 
 def output_display(slot_status):
     # Box settings
@@ -29,5 +29,6 @@ def output_display(slot_status):
                     cv2.FONT_HERSHEY_SIMPLEX, 1.5, (255, 255, 255), 3)
 
     # Save output
-    cv2.imwrite("./Images/available_slots.png", img)
-    print("✅ Saved as slots_array.png")
+    output_path = filepath("available_slots.png")
+    cv2.imwrite(output_path, img)
+    print("✅ Saved as available_slots.png")

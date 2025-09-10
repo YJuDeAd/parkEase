@@ -1,0 +1,39 @@
+services:
+  homeassistant:
+    image: linuxserver/homeassistant:latest
+    container_name: homeassistant
+    volumes:
+      - C:\Docker\Home Assistant\config:/config
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "8123:8123"
+    # restart: unless-stopped    # enable if you want the container to start automatically
+    networks:
+      - ha-net
+
+  mosquitto:
+    image: eclipse-mosquitto:2
+    container_name: mosquitto
+    ports:
+      - "1883:1883"   # MQTT
+      - "9001:9001"   # Websocket (optional)
+    volumes:
+      - C:\Docker\mosquitto\config:/mosquitto/config
+      - C:\Docker\mosquitto\data:/mosquitto/data
+      - C:\Docker\mosquitto\log:/mosquitto/log
+    # restart: unless-stopped    # enable if you want the container to start automatically
+    networks:
+      - ha-net
+
+  car-detection-model:
+    image: car-detection-model:latest   # Ensure you have built this image locally
+    container_name: car-detection-model
+    volumes:
+      - C:\Docker\TEST:/app/Images
+    # restart: unless-stopped    # enable if you want the container to start automatically
+    networks:
+      - ha-net
+
+networks:
+  ha-net:
+    driver: bridge

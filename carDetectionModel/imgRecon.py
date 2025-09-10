@@ -1,6 +1,7 @@
-import cv2
-import numpy as np
 from ultralytics import YOLO
+from path import filepath
+import numpy as np
+import cv2
 
 def recon(path, slots):
     # Load model
@@ -40,6 +41,8 @@ def recon(path, slots):
         cv2.putText(img, f"Slot {i}:{slot_status[i]}",
                     textPos, cv2.FONT_HERSHEY_SIMPLEX, 1, color, 2)
 
-    cv2.imwrite("./Images/output.png", img)
+    output_path = filepath("output.png")
+
+    cv2.imwrite(output_path, img)
     print("✅ Saved as output.png")
     return slot_status

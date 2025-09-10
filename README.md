@@ -84,7 +84,7 @@ carDetectionModel/
 ### 🧪 Car Detection (YOLOv8 Segmentation)
 
 #### 🔹 Input Test Image
-![Test Image](Images/test.jpeg)
+![Test Image](Images/recieved.jpeg)
 
 #### 🔹 Detection Result
 ![Detection Result](Images/output.png)

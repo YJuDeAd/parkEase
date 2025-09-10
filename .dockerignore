@@ -1,0 +1,27 @@
+# .dockerignore
+
+# Ignore version control folders and files
+.git/
+.gitignore
+
+# Ignore Python cache
+__pycache__/
+*.pyc
+
+# Ignore test folders and files
+test/
+
+Images/
+
+# Ignore documentation and contribution files
+README.md
+CONTRIBUTING.md
+LICENSE
+
+# Ignore YAML configuration files
+cam.yaml
+dashboard.yaml
+parkEase.yaml
+
+# Secrets
+secrets.yaml
