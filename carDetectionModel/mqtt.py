@@ -24,6 +24,7 @@ PASSWORD = None
 
 # Topics
 TOPIC_TO_HA = "yolo/image"        # device → HA
+TOPIC_TO_DISPLAY = "parkease/slots"  # device → display
 TOPIC_FROM_HA = "device/image"    # HA → device
 
 SEND_FILE = filepath("available_slots.png")    # file this device will send to HA
@@ -46,9 +47,11 @@ def on_message(client, userdata, msg):
     receive_image(received_text)
     availSlots = recon(imgPath, slots)
     output_display(availSlots)
+    global pattern
+    pattern = "".join(str(x) for x in availSlots)
 
 # Setup client
-client = mqtt.Client(callback_api_version=mqtt.CallbackAPIVersion.VERSION2)
+client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message
 
@@ -68,6 +71,11 @@ try:
                 img_b64 = base64.b64encode(img_bytes).decode("utf-8")
                 client.publish(TOPIC_TO_HA, payload=img_b64)
                 print(f"📤 Sent {SEND_FILE} to {TOPIC_TO_HA}")
+            try:
+                client.publish(TOPIC_TO_DISPLAY, pattern)
+                print(f"Published slot pattern: {pattern}")
+            except NameError:
+                print("⚠️ Slot pattern not defined yet, skipping publish to display.")
         else:
             print(f"⚠️ File {SEND_FILE} not found, skipping publish.")
 
